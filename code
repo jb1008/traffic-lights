@@ -1,0 +1,39 @@
+#define F_CPU 16000000L  //setting frequency
+#include <avr/io.h>
+#include <util/delay.h>
+
+int main(void)
+{
+	DDRD = 0xff; //setting register D as an output
+	DDRB |=(1<<PINB0); //setting pin B0 as an output
+	DDRB |=(1<<PINB1); //setting pin B1 as an output
+	PORTB &= ~(1<<PINB0); //setting B0 as a 0
+	PORTB &= ~(1<<PINB1); //setting B1 as a 0
+	PORTD &= ~(0xff);  //setting D ports to 0
+	
+	while (1)
+	{
+		PORTD =(0<<PIND5); //ensuring EW stop is off
+		PORTD ^=(1<<PIND2); //set NS stop on
+		_delay_ms(2000); //wait 2 seconds
+		PORTB ^=(1<<PINB0); //Set EW walk on
+		PORTD ^=(1<<PIND7); //set EW go on
+		_delay_ms(10000);  //wait 10 seconds
+		PORTB ^=(1<<PINB0); //Set EW walk off
+		PORTD ^=(1<<PIND6); //set EW slow on
+		PORTD ^=(1<<PIND7); //set EW go off
+		_delay_ms(2000);  //wait 2 seconds
+		PORTD ^=(1<<PIND6); //set EW slow off
+		PORTD ^=(1<<PIND5); //set EW stop on
+		_delay_ms(2000);  //wait 2 seconds
+		PORTB ^=(1<<PINB1); //Set NS walk on
+		PORTD ^=(1<<PIND2); //set NS stop off
+		PORTD ^=(1<<PIND4); //set NS go on
+		_delay_ms(10000);  //wait 10 seconds
+		PORTB ^=(1<<PINB1); //Set NS walk off
+		PORTD ^=(1<<PIND3); //set NS slow on
+		PORTD ^=(1<<PIND4); //set NS go off
+		_delay_ms(2000);  //wait 2 seconds
+		PORTD ^=(1<<PIND3); //set NS slow off
+	}
+}
